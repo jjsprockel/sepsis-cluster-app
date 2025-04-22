@@ -6,7 +6,7 @@ Este repositorio contiene una aplicación web interactiva que permite ingresar v
 
 ## 🌐 Aplicación en vivo
 
-Puedes desplegar la aplicación con GitHub Pages o abrir el archivo [`index.html`](./index.html) directamente en tu navegador.
+Puedes desplegar la aplicación con GitHub Pages (https://jjsprockel.github.io/sepsis-cluster-app/) o abrir el archivo [`index.html`](./index.html) directamente en tu navegador.
 
 ![App Demo](https://raw.githubusercontent.com/tu-usuario/sepsis-cluster-app/main/demo.gif)
 
@@ -64,7 +64,7 @@ Estas variables fueron estandarizadas y procesadas para entrenamiento no supervi
 ## 📄 Cita sugerida
 
 > Este trabajo es parte de un proyecto de investigación sobre inteligencia artificial aplicada a medicina crítica.  
-> Programa GLORIA – Fundación Universitaria de Ciencias de la Salud (FUCS), Bogotá, Colombia.
+> ProfundaMente laboratorio de investigación en IA aplicada a salud – Fundación Universitaria de Ciencias de la Salud (FUCS), Bogotá, Colombia.
 
 ---
 
