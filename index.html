@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clasificación de Clúster en Sepsis</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      border-radius: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .result {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <div class="card p-4">
+          <h2 class="mb-4 text-center">Clasificador de Clúster en Sepsis</h2>
+          <form id="formulario">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Edad</label>
+                <input type="number" class="form-control" name="edad" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">APACHE II</label>
+                <input type="number" class="form-control" name="apache" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">SOFA</label>
+                <input type="number" class="form-control" name="sofa" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Creatinina</label>
+                <input type="number" step="any" class="form-control" name="creatinina" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Lactato (hora 0)</label>
+                <input type="number" step="any" class="form-control" name="lactato" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">pH (hora 0)</label>
+                <input type="number" step="any" class="form-control" name="ph" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">IS-0</label>
+                <input type="number" step="any" class="form-control" name="is0" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">Delta IS</label>
+                <input type="number" step="any" class="form-control" name="deltais" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Clasificar paciente</button>
+          </form>
+
+          <div class="result text-center mt-4" id="resultado"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const centroides = [
+      { cluster: 0, p_muerte: 0.47, p_los: 0.67, centroide: [72, 19, 9, 2.04, 3.7, 7.26, 1.04, 0.02] },
+      { cluster: 1, p_muerte: 0.25, p_los: 0.66, centroide: [67, 12, 8, 0.81, 1.6, 7.31, 0.85, -0.04] },
+      { cluster: 2, p_muerte: 0.57, p_los: 0.71, centroide: [62, 20, 10, 4.44, 1.2, 7.22, 0.81, -0.08] },
+      { cluster: 3, p_muerte: 0.75, p_los: 0.75, centroide: [48, 15, 8, 1.52, 3.25, 7.17, 1.20, -0.35] },
+      { cluster: 4, p_muerte: 0.43, p_los: 0.57, centroide: [42, 14.5, 7, 0.96, 1.6, 7.33, 0.74, -0.04] },
+    ];
+
+    function distanciaEuclidiana(arr1, arr2) {
+      return Math.sqrt(arr1.reduce((sum, val, i) => sum + Math.pow(val - arr2[i], 2), 0));
+    }
+
+    document.getElementById("formulario").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const datos = new FormData(e.target);
+      const entrada = [
+        parseFloat(datos.get("edad")),
+        parseFloat(datos.get("apache")),
+        parseFloat(datos.get("sofa")),
+        parseFloat(datos.get("creatinina")),
+        parseFloat(datos.get("lactato")),
+        parseFloat(datos.get("ph")),
+        parseFloat(datos.get("is0")),
+        parseFloat(datos.get("deltais"))
+      ];
+
+      let mejorCluster = null;
+      let minDist = Infinity;
+
+      for (const c of centroides) {
+        const dist = distanciaEuclidiana(entrada, c.centroide);
+        if (dist < minDist) {
+          minDist = dist;
+          mejorCluster = c;
+        }
+      }
+
+      document.getElementById("resultado").innerHTML = `
+        <div class="alert alert-info">
+          <h4>Resultado:</h4>
+          <p><strong>Clúster estimado:</strong> ${mejorCluster.cluster}</p>
+          <p><strong>Probabilidad de mortalidad:</strong> ${(mejorCluster.p_muerte * 100).toFixed(1)}%</p>
+          <p><strong>Probabilidad de estancia prolongada:</strong> ${(mejorCluster.p_los * 100).toFixed(1)}%</p>
+        </div>`;
+    });
+  </script>
+</body>
+</html>
